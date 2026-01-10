@@ -220,17 +220,20 @@ export default function UsersPage() {
             <DataTable value={users}
                 className="dt-custom"
                 stripedRows
+                scrollable
                 removableSort
                 sortMode='multiple'
                 header={UserTableHeader}
+                paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]}
             >
                 <Column
                     header="Name"
-                    body={(rowData) => `${rowData.FirstName} ${rowData.LastName}`}
+                    frozen
+                    body={(rowData) => <b>{rowData.FirstName} {rowData.LastName}</b>}
                     sortable
                 />
 
-                <Column field="Email" header="Email" sortable />
+                <Column field="Email" header="Email" frozen sortable />
                 <Column field="Role" header="Role" sortable />
                 <Column field="Salutation" header="Salutation" />
                 <Column field="Department" header="Department" />
