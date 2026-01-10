@@ -3,6 +3,7 @@ import Sidebar from './components/sidebar/Sidebar';
 import './App.scss';
 
 import UsersPage from './pages/users/UsersPage';
+import DictionaryPage from './pages/dictionary/DictionaryPage';
 
 // Layout component to wrap Sidebar and content
 const Layout = () => {
@@ -18,7 +19,6 @@ const Layout = () => {
 
 // Placeholder components
 const Home = () => <h1>Home Landing Page</h1>;
-const Dictionary = () => <h1>Dictionary</h1>;
 
 function App() {
   return (
@@ -27,7 +27,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="users" element={<UsersPage />} />
-          <Route path="dictionary" element={<Dictionary />} />
+          <Route path="dictionary" element={<DictionaryPage />} />
         </Route>
       </Routes>
     </Router>
