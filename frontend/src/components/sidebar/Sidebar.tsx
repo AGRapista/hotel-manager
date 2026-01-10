@@ -2,6 +2,8 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import './Sidebar.scss';
 
+import hotelImg from '../../assets/hotel-sample.jpg';
+
 import {
     HomeIcon,
     UsersIcon,
@@ -41,6 +43,7 @@ const Sidebar: React.FC = () => {
                     </NavLink>
                 ))}
             </nav>
+            {/* <img src={hotelImg}></img> */}
         </div>
     );
 };
