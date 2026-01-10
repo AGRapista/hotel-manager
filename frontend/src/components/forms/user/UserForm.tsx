@@ -1,21 +1,21 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
-import './AddUserDialog.scss';
+import './UserForm.scss';
 
 import { PrimeIcons } from 'primereact/api';
 import 'primeicons/primeicons.css';
 
-interface AddUserDialogProps {
+interface UserFormProps {
     visible: boolean;
     onHide: () => void;
     onSave: (data: any) => void;
+    initialUser?: any;
 }
 
-export default function AddUserDialog({ visible, onHide, onSave }: AddUserDialogProps) {
-    const [formData, setFormData] = useState({
+export default function UserForm({ visible, onHide, onSave, initialUser }: UserFormProps) {
+    const defaultUser = {
         Salutation: '',
         FirstName: '',
         LastName: '',
@@ -31,7 +31,15 @@ export default function AddUserDialog({ visible, onHide, onSave }: AddUserDialog
         Brand: '',
         Property: '',
         Biometric: ''
-    });
+    };
+
+    const [formData, setFormData] = useState(defaultUser);
+
+    useEffect(() => {
+        if (visible) {
+            setFormData(initialUser || defaultUser);
+        }
+    }, [visible, initialUser]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -51,7 +59,14 @@ export default function AddUserDialog({ visible, onHide, onSave }: AddUserDialog
     );
 
     return (
-        <Dialog header="Add User" visible={visible} style={{ width: '50vw' }} footer={footer} onHide={onHide} className="add-user-dialog">
+        <Dialog
+            header={initialUser ? "Edit User" : "Add User"}
+            visible={visible}
+            style={{ width: '50vw' }}
+            footer={footer}
+            onHide={onHide}
+            className="user-form-dialog"
+        >
             <div className="form-content">
                 <div className="form-group">
                     <h3 className="group-title">Profile</h3>

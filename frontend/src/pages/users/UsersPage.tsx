@@ -2,13 +2,17 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import './UsersPage.scss';
 import "primereact/resources/themes/lara-light-indigo/theme.css";
-import { useState } from 'react';
-import AddUserDialog from '../../components/forms/user/AddUserDialog';
+import { useState, useRef } from 'react';
+import UserForm from '../../components/forms/user/UserForm';
 import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { ContextMenu } from 'primereact/contextmenu';
 
 
 export default function UsersPage() {
-    const [isAddUserOpen, setIsAddUserOpen] = useState(false);
+    const [isUserFormOpen, setIsUserFormOpen] = useState(false);
+    const [selectedUser, setSelectedUser] = useState<any>(null);
+    const [contextMenuSelection, setContextMenuSelection] = useState<any>(null);
+    const cm = useRef<ContextMenu>(null);
 
     const users = [
         {
@@ -193,16 +197,45 @@ export default function UsersPage() {
         }
     ];
 
+    const menuModel = [
+        { label: 'Edit User', icon: 'pi pi-fw pi-user-edit', command: () => editUser(contextMenuSelection) },
+        { label: 'Delete User', icon: 'pi pi-fw pi-trash', command: () => deleteUser(contextMenuSelection) }
+    ];
+
+    const editUser = (user: any) => {
+        setSelectedUser(user);
+        setIsUserFormOpen(true);
+    };
+
+    const deleteUser = (user: any) => {
+        console.log("Deleting user:", user);
+        // Implement delete logic
+    };
+
     const handleSaveUser = (newUser: any) => {
-        console.log("New User:", newUser);
-        // Here you would typically updated the state or call an API
+        console.log("Saved User:", newUser);
+        // Implement save logic (update or add)
+        setIsUserFormOpen(false);
+        setSelectedUser(null);
+    };
+
+    const openNew = () => {
+        setSelectedUser(null);
+        setIsUserFormOpen(true);
+    };
+
+    const onRowClick = (event: any) => {
+        setContextMenuSelection(event.data);
+        if (cm.current) {
+            cm.current.show(event.originalEvent);
+        }
     };
 
     const UserTableHeader = () => {
         return (
             <div className="users-page-header">
                 <div className="header-actions">
-                    <button className="btn-action btn-add" onClick={() => setIsAddUserOpen(true)}>
+                    <button className="btn-action btn-add" onClick={openNew}>
                         <PlusIcon className="icon" />
                         Create
                     </button>
@@ -215,8 +248,11 @@ export default function UsersPage() {
         );
     };
 
-    const UserTable = () => {
-        return (
+    return (
+        <div>
+            <h1>Users Page</h1>
+            <ContextMenu model={menuModel} ref={cm} />
+
             <DataTable value={users}
                 className="dt-custom"
                 stripedRows
@@ -225,6 +261,12 @@ export default function UsersPage() {
                 sortMode='multiple'
                 header={UserTableHeader}
                 paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]}
+
+                contextMenuSelection={contextMenuSelection}
+                onContextMenuSelectionChange={(e) => setContextMenuSelection(e.value)}
+                onRowClick={onRowClick}
+                selectionMode="single"
+                metaKeySelection={false}
             >
                 <Column
                     header="Name"
@@ -257,17 +299,12 @@ export default function UsersPage() {
                 <Column field="Property" header="Property(s)" />
                 <Column field="Biometric" header="Biometric" />
             </DataTable>
-        )
-    }
 
-    return (
-        <div>
-            <h1>Users Page</h1>
-            <UserTable />
-            <AddUserDialog
-                visible={isAddUserOpen}
-                onHide={() => setIsAddUserOpen(false)}
+            <UserForm
+                visible={isUserFormOpen}
+                onHide={() => setIsUserFormOpen(false)}
                 onSave={handleSaveUser}
+                initialUser={selectedUser}
             />
         </div>
     );
