@@ -2,9 +2,14 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import './UsersPage.scss';
 import "primereact/resources/themes/lara-light-indigo/theme.css";
+import { useState } from 'react';
+import AddUserDialog from '../../components/forms/user/AddUserDialog';
+import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 
 export default function UsersPage() {
+    const [isAddUserOpen, setIsAddUserOpen] = useState(false);
+
     const users = [
         {
             "Email": "john.doe@example.com",
@@ -188,14 +193,36 @@ export default function UsersPage() {
         }
     ];
 
-    return (
-        <div>
-            <h1>Users Page</h1>
+    const handleSaveUser = (newUser: any) => {
+        console.log("New User:", newUser);
+        // Here you would typically updated the state or call an API
+    };
+
+    const UserTableHeader = () => {
+        return (
+            <div className="users-page-header">
+                <div className="header-actions">
+                    <button className="btn-action btn-add" onClick={() => setIsAddUserOpen(true)}>
+                        <PlusIcon className="icon" />
+                        Create
+                    </button>
+                    <button className="btn-action btn-delete">
+                        <TrashIcon className="icon" />
+                        Delete
+                    </button>
+                </div>
+            </div>
+        );
+    };
+
+    const UserTable = () => {
+        return (
             <DataTable value={users}
                 className="dt-custom"
                 stripedRows
                 removableSort
                 sortMode='multiple'
+                header={UserTableHeader}
             >
                 <Column
                     header="Name"
@@ -227,7 +254,18 @@ export default function UsersPage() {
                 <Column field="Property" header="Property(s)" />
                 <Column field="Biometric" header="Biometric" />
             </DataTable>
+        )
+    }
 
+    return (
+        <div>
+            <h1>Users Page</h1>
+            <UserTable />
+            <AddUserDialog
+                visible={isAddUserOpen}
+                onHide={() => setIsAddUserOpen(false)}
+                onSave={handleSaveUser}
+            />
         </div>
     );
 }
