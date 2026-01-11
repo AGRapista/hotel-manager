@@ -12,6 +12,10 @@ export default function DictionaryPage() {
         items: Dictionary[];
     };
 
+    type DrawerData = {
+        name: string
+    }[];
+
     const dictionaries: Dictionary[] = [
         {
             name: 'Priority',
@@ -56,7 +60,7 @@ export default function DictionaryPage() {
         },
     ]
 
-    const dictionaryData = {
+    const dictionaryData: Record<string, DrawerData> = {
         priority: [
             { name: 'Critical' },
             { name: 'Super High' },
@@ -142,6 +146,7 @@ export default function DictionaryPage() {
                     <Drawer
                         key={dictionary.key}
                         DrawerName={dictionary.name}
+                        DrawerItems={dictionaryData[dictionary.key]}
                     />
                 ))}
             </div>
